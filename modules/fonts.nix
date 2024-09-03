@@ -10,7 +10,19 @@
       noto-fonts-emoji
       jetbrains-mono
       fira-code
-      (nerdfonts.override {fonts = ["JetBrainsMono" "Noto" "FiraCode"];})
+      lexend
+      borg-sans-mono
+      (nerdfonts.override {
+        fonts = [
+          "JetBrainsMono"
+          "Noto"
+          "FiraCode"
+          "DroidSansMono"
+          "Iosevka"
+          "IosevkaTerm"
+          "RobotoMono"
+        ];
+      })
     ];
     fontconfig.defaultFonts = pkgs.lib.mkForce {
       serif = ["Source Serif Pro" "Noto Serif CJK SC" "Noto Serif"];
