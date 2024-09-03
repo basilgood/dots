@@ -8,8 +8,10 @@
     ../../modules/xorg.nix
     ../../modules/fonts.nix
     ../../modules/nix.nix
+    ../../modules/sound.nix
     ../../modules/wg.nix
     ../../modules/virtualisation.nix
+    ../../modules/nix-ld.nix
     ./hardware-configuration.nix
   ];
 
@@ -38,14 +40,13 @@
       127.0.0.1 local.cosmoz.com
     '';
   };
+  programs.nm-applet.enable = true;
 
   time.timeZone = "Europe/Bucharest";
-
-  nixpkgs.config.allowUnfree = true;
-
-  networking.useDHCP = false;
-  networking.interfaces.enp8s0.useDHCP = true;
-  networking.interfaces.wlp6s0.useDHCP = true;
+  nixpkgs.config = {
+    allowUnfree = true;
+    allowUnsupportedSystem = true;
+  };
 
   i18n.defaultLocale = "en_US.UTF-8";
   console = {
@@ -64,26 +65,13 @@
   programs.ssh = {
     askPassword = "${pkgs.lxqt.lxqt-openssh-askpass}/bin/lxqt-openssh-askpass";
   };
+  programs.wireshark = {
+    enable = true;
+    package = pkgs.wireshark;
+  };
   environment.localBinInPath = true;
   services.upower.enable = true;
-  # services.flatpak.enable = true;
   services.gvfs.enable = true;
-  sound.enable = true;
-  security.rtkit.enable = true;
-  # hardware.pulseaudio = {
-  #   enable = true;
-  #   support32Bit = true;
-  # };
-  # sound.mediaKeys.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    jack.enable = true;
-  };
-  # systemd.user.services.pipewire-pulse.path = [ pkgs.pulseaudio ];
-  # musnix.enable = true;
   services.xserver.config = ''
     Section "Monitor"
       Identifier "HDMI-A-0"
