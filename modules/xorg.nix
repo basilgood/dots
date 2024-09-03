@@ -1,43 +1,41 @@
 {pkgs, ...}: {
-  services.xserver.enable = true;
-  services.xserver.desktopManager.xterm.enable = false;
-  services.xserver = {
-    videoDrivers = ["amdgpu"];
-    displayManager = {
-      lightdm = {
-        enable = true;
-        background = pkgs.nixos-artwork.wallpapers.nineish-dark-gray.gnomeFilePath;
-        greeters = {
-          gtk = {
-            theme = {
-              name = "Nordic";
-              package = pkgs.nordic;
-            };
-            cursorTheme = {
-              name = "Nordzy-white-cursors";
-              package = pkgs.nordzy-cursor-theme;
+  services = {
+    xserver = {
+      enable = true;
+      videoDrivers = ["amdgpu"];
+      desktopManager = {
+        xterm.enable = false;
+      };
+      displayManager = {
+        lightdm = {
+          enable = true;
+          background = pkgs.nixos-artwork.wallpapers.nineish-dark-gray.gnomeFilePath;
+          greeters = {
+            gtk = {
+              theme = {
+                name = "catppuccin-macchiato-pink-compact";
+                package = pkgs.catppuccin-gtk.override {
+                  accents = ["pink"];
+                  size = "compact";
+                  variant = "macchiato";
+                };
+              };
             };
           };
         };
+        sessionCommands = ''
+          xset s off
+          xset -dpms
+        '';
       };
-      sessionCommands = ''
-        xset s off
-        xset -dpms
-        ${pkgs.networkmanagerapplet}/bin/nm-applet &
-      '';
+      windowManager.i3.enable = true;
     };
-    windowManager.i3.enable = true;
   };
 
-  hardware.opengl = {
+  hardware.graphics = {
     enable = true;
-    driSupport = true;
-    driSupport32Bit = true;
+    enable32Bit = true;
   };
 
   xdg.portal.config.common.default = "gtk";
-  # xdg.portal = {
-  #   enable = true;
-  #   extraPortals = [pkgs.xdg-desktop-portal-gtk];
-  # };
 }
