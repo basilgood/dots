@@ -2,7 +2,7 @@
   services.xidlehook = {
     enable = true;
     detect-sleep = true;
-    not-when-audio = false;  # TODO: true when xidlehook will support pipewire
+    not-when-audio = true;  # TODO: true when xidlehook will support pipewire
     not-when-fullscreen = true;
     timers = [
       {
