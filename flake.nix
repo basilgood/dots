@@ -2,22 +2,27 @@
   description = "dots";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    neovim-flake = {
-      url = "github:neovim/neovim?dir=contrib";
-      inputs.nixpkgs.follows = "nixpkgs";
+    neovim-nightly = {
+      url = "github:nix-community/neovim-nightly-overlay";
     };
+    catppuccin.url = "github:catppuccin/nix";
+    # nix-ld-rs = {
+    #   url = "github:nix-community/nix-ld-rs";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
   };
 
   outputs = inputs @ {
     self,
     nixpkgs,
+    catppuccin,
+    neovim-nightly,
     home-manager,
-    neovim-flake,
     ...
   }: let
     system = "x86_64-linux";
@@ -30,14 +35,17 @@
           ./hosts/liberty
           home-manager.nixosModules.home-manager
           {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.vasy.imports = [
-              ./home
-            ];
-            home-manager.users.vasy.home.packages = [
-              neovim-flake.packages."${system}".neovim
-            ];
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              users.vasy.imports = [
+                ./home
+                catppuccin.homeManagerModules.catppuccin
+              ];
+              users.vasy.home.packages = [
+                neovim-nightly.packages.${system}.neovim
+              ];
+            };
           }
         ];
       };
