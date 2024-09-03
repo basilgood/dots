@@ -11,12 +11,15 @@
 in {
   programs.rofi = {
     enable = true;
-    font = "monospace 14";
-    terminal = "${pkgs.alacritty}/bin/alacritty";
+    terminal = "kitty";
     plugins = with pkgs; [rofi-top rofi-calc rofi-emoji];
     location = "center";
     extraConfig = {
       modi = "drun,run,window,calc,emoji";
+      show-icons = true;
+      display-drun = "";
+      drun-display-format = "{name}";
+      sidebar-mode = false;
       kb-primary-paste = "Control+V,Shift+Insert";
       kb-secondary-paste = "Control+v,Insert";
     };
