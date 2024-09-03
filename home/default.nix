@@ -1,110 +1,220 @@
-{
-  pkgs,
-  lib,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [
     ./i3.nix
     ./i3status.nix
     ./rofi.nix
     ./services
     ./gtk.nix
+    ./xdg.nix
     ./bash.nix
     ./tmux.nix
     ./git.nix
-    ./lf.nix
+    ./yazi.nix
   ];
 
   home = {
     username = "vasy";
     homeDirectory = "/home/vasy";
     packages = with pkgs; [
+      vim-full
       anydesk
       element-desktop
       docker-compose
       arion
       inkscape
-      vim_configurable
       keepassxc
       thunderbird
-      xfce.thunar
-      gnome.file-roller
+      nextcloud-client
+      freetube
       betterlockscreen
       arandr
       pciutils
       pavucontrol
-      sonic-pi
-      supercollider
-      yuzu
+      ryujinx
       rofi-power-menu
       xclip
-      fd
       lm_sensors
+      fd
       duf
       ytfzf
       nb
-      steam-run
-      obs-studio
+      simplescreenrecorder
       vokoscreen-ng
       telegram-desktop
+      newsraft
+      amberol
+      xfce.thunar
+      clifm
+      broot
+      zathura
+      imv
+      qimgv
+      autorandr
     ];
 
     stateVersion = "23.11";
   };
 
   fonts.fontconfig.enable = true;
-  programs.brave.enable = true;
-  programs.chromium.enable = true;
-  programs.librewolf.enable = true;
-  programs.feh.enable = true;
-  programs.btop.enable = true;
-  programs.mpv = {
-    enable = true;
-    bindings = {
-      "F3" = "cycle keepaspect";
-      "F4" = "cycle-values panscan 1 0";
-      "F10" = "cycle-values video-rotate 90 180 270 0";
+  programs = {
+    neovim = {
+      enable = true;
+      extraLuaPackages = ps: [ps.magick];
+      extraPackages = with pkgs; [
+        vscode-langservers-extracted
+        shfmt
+        yamllint
+        jq
+        fixjson
+        gcc
+        imagemagick
+      ];
     };
-  };
-  programs.ripgrep.enable = true;
-  programs.ripgrep.arguments = ["--pretty"];
-  programs.fzf.enable = true;
-  programs.fzf.defaultOptions = ["--height 40%" "--layout=reverse" "--ansi"];
-  programs.fzf.defaultCommand = "fd -tf -L -H -E=.git -E=node_modules --strip-cwd-prefix";
-  programs.fzf.tmux.enableShellIntegration = true;
-  programs.direnv.enable = true;
-  programs.bat = {
-    enable = true;
-    config.theme = "TwoDark";
-  };
-  programs.home-manager.enable = true;
-  programs.alacritty = {
-    enable = true;
-    settings = {
-      font = {
-        normal = {
-          family = "JetBrainsMono Nerd Font";
+    brave.enable = true;
+    chromium.enable = true;
+    feh.enable = true;
+    btop = {
+      enable = true;
+      catppuccin = {enable = true;};
+    };
+    mpv = {
+      enable = true;
+      config = {
+        ytdl-format = "bestvideo+bestaudio";
+      };
+      scripts = [
+        pkgs.mpvScripts.uosc
+      ];
+      bindings = {
+        "Alt+0" = "set window-scale 0.5";
+        "F3" = "cycle keepaspect";
+        "F4" = "cycle-values panscan 1 0";
+        "F10" = "cycle-values video-rotate 90 180 270 0";
+      };
+    };
+    eza = {
+      enable = true;
+      extraOptions = [
+        "--group-directories-first"
+      ];
+    };
+    ripgrep.enable = true;
+    ripgrep.arguments = ["--pretty"];
+    fzf.enable = true;
+    fzf.defaultOptions = ["--height 40%" "--layout=reverse" "--ansi"];
+    fzf.defaultCommand = "fd -tf -L -H -E=.git -E=node_modules --strip-cwd-prefix";
+    fzf.tmux.enableShellIntegration = true;
+    direnv.enable = true;
+    bat = {
+      enable = true;
+      config.theme = "TwoDark";
+    };
+    home-manager.enable = true;
+    alacritty = {
+      enable = true;
+      catppuccin.enable = true;
+      settings = {
+        font = {
+          normal = {
+            family = "JetBrainsMono NF";
+          };
+          size = 14;
         };
-        size = 14;
-      };
-      env = {
-        TERM = "xterm-256color";
+        env = {
+          TERM = "xterm-256color";
+        };
       };
     };
-  };
-  programs.aria2 = {
-    enable = true;
-    settings = {
-      dir = "\${HOME}/Downloads/aria2";
-      follow-torrent = false;
-      peer-id-prefix = "";
-      user-agent = "";
-      summary-interval = "0";
+    kitty = {
+      enable = true;
+      catppuccin = {enable = true;};
+      font = {
+        # name = "JetBrainsMono Nerd Font";
+        # package = pkgs.hack-font;
+        name = "Iosevka Term";
+        size = 14.0;
+      };
+      shellIntegration.mode = "no-cursor";
+      settings = {
+        term = "xterm-256color";
+        scrollback_lines = 10000;
+        cursor_shape = "block";
+        cursor_blink_interval = 0;
+        disable_ligatures = "never";
+        adjust_line_height = "110%";
+      };
+    };
+    aria2 = {
+      enable = true;
+      settings = {
+        dir = "\${HOME}/Downloads/aria2";
+        follow-torrent = false;
+        peer-id-prefix = "";
+        user-agent = "";
+        summary-interval = "0";
+      };
     };
   };
 
+  services.flameshot.enable = true;
   home.sessionVariables = rec {
     VISUAL = "nvim";
     EDITOR = VISUAL;
+    NIX_LD_LIBRARY_PATH = with pkgs;
+      lib.makeLibraryPath [
+        alsa-lib
+        at-spi2-atk
+        at-spi2-core
+        atk
+        cairo
+        cups
+        curl
+        dbus
+        expat
+        egl-wayland
+        fontconfig
+        freetype
+        fuse3
+        gdk-pixbuf
+        glib
+        gtk3
+        gtk4
+        icu
+        libGL
+        libappindicator-gtk3
+        libdrm
+        libglvnd
+        libnotify
+        libpulseaudio
+        libunwind
+        libusb1
+        libuuid
+        libxkbcommon
+        libxml2
+        mesa
+        nspr
+        nss
+        openssl
+        pango
+        pipewire
+        stdenv.cc.cc
+        systemd
+        vulkan-loader
+        xorg.libX11
+        xorg.libXScrnSaver
+        xorg.libXcomposite
+        xorg.libXcursor
+        xorg.libXdamage
+        xorg.libXext
+        xorg.libXfixes
+        xorg.libXi
+        xorg.libXrandr
+        xorg.libXrender
+        xorg.libXtst
+        xorg.libxcb
+        xorg.libxkbfile
+        xorg.libxshmfence
+        zlib
+      ];
   };
 }
