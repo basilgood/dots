@@ -1,30 +1,39 @@
-{pkgs, ...}: rec {
+{
+  pkgs,
+  config,
+  ...
+}: {
   gtk = {
     enable = true;
+
     font = {
       name = "Noto Sans";
-      size = 10;
+      package = pkgs.noto-fonts;
+      size = 11;
     };
-    theme = {
-      name = "rose-pine";
-      package = pkgs.rose-pine-gtk-theme;
-    };
+
+    gtk2.configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
+
     iconTheme = {
-      name = "rose-pine";
-      package = pkgs.rose-pine-icon-theme;
+      name = "Papirus-Dark";
+      package = pkgs.papirus-icon-theme;
     };
-    cursorTheme = {
-      name = "Nordzy-cursors";
-      package = pkgs.nordzy-cursor-theme;
+
+    theme = {
+      name = "catppuccin-macchiato-pink-compact";
+      package = pkgs.catppuccin-gtk.override {
+        accents = ["pink"];
+        size = "compact";
+        variant = "macchiato";
+      };
     };
   };
 
-  services.xsettingsd = {
-    enable = true;
-    settings = {
-      "Net/ThemeName" = "${gtk.theme.name}";
-      "Net/IconThemeName" = "${gtk.iconTheme.name}";
-      "Gtk/CursorThemeName" = "${gtk.cursorTheme.name}";
-    };
+  home.pointerCursor = {
+    gtk.enable = true;
+    x11.enable = true;
+    package = pkgs.bibata-cursors;
+    name = "Bibata-Modern-Ice";
+    size = 24;
   };
 }
