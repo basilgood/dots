@@ -3,7 +3,15 @@ _: {
     enable = true;
 
     bars.bottom = {
-      theme = "native";
+      settings = {
+        theme = {
+          theme = "native";
+          overrides = {
+            idle_bg = "#1e1e2e";
+            idle_fg = "#cdd6f4";
+          };
+        };
+      };
       icons = "material-nf";
       blocks = [
         {
@@ -37,6 +45,12 @@ _: {
         }
         {
           block = "sound";
+          click = [
+            {
+              button = "left";
+              cmd = "pavucontrol";
+            }
+          ];
         }
         {
           block = "time";
