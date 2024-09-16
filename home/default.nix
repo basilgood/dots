@@ -16,6 +16,8 @@
     username = "vasy";
     homeDirectory = "/home/vasy";
     packages = with pkgs; [
+      obs-studio
+      shotcut
       vim-full
       anydesk
       element-desktop
