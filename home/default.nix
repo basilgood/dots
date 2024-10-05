@@ -46,12 +46,12 @@
       newsraft
       amberol
       xfce.thunar
-      clifm
       broot
       zathura
       imv
       qimgv
       autorandr
+      timewarrior
     ];
 
     stateVersion = "23.11";
