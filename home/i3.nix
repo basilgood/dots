@@ -38,6 +38,8 @@
         "XF86AudioMicMute" = "exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle";
         "${modifier}+Shift+e" = "exec rofi -show p -modi p:rofi-power-menu";
         "${modifier}+d" = "exec rofi -show drun -show-icons -terminal kitty";
+        "Print" = "exec --no-startup-id rofi-screenshot";
+        "Shift+Print" = "exec --no-startup-id rofi-screenshot -s";
         "${modifier}+l" = "exec --no-startup-id betterlockscreen --lock blur";
         "${modifier}+z" = "exec --no-startup-id ${pkgs.keepmenu}/bin/keepmenu";
         "${modifier}+Shift+quotedbl" = "kill";
@@ -112,4 +114,27 @@
       ];
     };
   };
+
+  home.packages = [
+    (pkgs.rofi-screenshot.overrideAttrs (oa: {
+      postFixup = ''
+        wrapProgram $out/bin/${oa.pname} \
+          --set PATH ${
+          with pkgs;
+            lib.makeBinPath [
+              libnotify
+              slop
+              ffcast
+              ffmpeg
+              xclip
+              rofi
+              coreutils
+              gnused
+              procps
+              gawk
+            ]
+        }
+      '';
+    }))
+  ];
 }
