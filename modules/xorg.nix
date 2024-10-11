@@ -36,6 +36,4 @@
     enable = true;
     enable32Bit = true;
   };
-
-  xdg.portal.config.common.default = "gtk";
 }
