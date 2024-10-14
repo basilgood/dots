@@ -158,7 +158,6 @@
     };
   };
 
-  services.flameshot.enable = true;
   home.sessionVariables = rec {
     VISUAL = "nvim";
     EDITOR = VISUAL;
