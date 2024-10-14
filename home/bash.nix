@@ -5,6 +5,7 @@
       grep = "grep --color=auto";
       lt = "${pkgs.tree}/bin/tree -L 1";
       hm = "sed 's/[[:space:]]*$//' $HISTFILE | tac | awk '!x[$0]++' | tac | ${pkgs.moreutils}/bin/sponge $HISTFILE";
+      b = "${pkgs.bartib}/bin/bartib -f ~/.bartib";
     };
     historySize = -1;
     historyFileSize = -1;
