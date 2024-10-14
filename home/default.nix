@@ -10,6 +10,7 @@
     ./tmux.nix
     ./git.nix
     ./yazi.nix
+    ./zk.nix
   ];
 
   home = {
