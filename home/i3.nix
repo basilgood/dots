@@ -60,6 +60,10 @@
           command = "floating enable";
         }
         {
+          criteria.class = ".shutter-wrapped";
+          command = "floating enable";
+        }
+        {
           criteria.title = "Playwright Inspector";
           command = "floating enable";
         }
