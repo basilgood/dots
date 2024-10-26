@@ -1,7 +1,4 @@
-{
-  pkgs,
-  ...
-}: let
+{pkgs, ...}: let
   rofiThemes = pkgs.fetchFromGitHub {
     owner = "newmanls";
     repo = "rofi-themes-collection";
@@ -11,6 +8,7 @@
 in {
   programs.rofi = {
     enable = true;
+    package = pkgs.rofi;
     terminal = "kitty";
     plugins = with pkgs; [rofi-top rofi-calc rofi-emoji];
     location = "center";
@@ -25,4 +23,49 @@ in {
     };
     theme = "${rofiThemes}/themes/squared-nord.rasi";
   };
+
+  programs.rbw = {
+    enable = true;
+    settings = {
+      pinentry = pkgs.pinentry-gtk2;
+    };
+  };
+
+  home.packages = [
+    (pkgs.rofi-screenshot.overrideAttrs (oa: {
+      postFixup = ''
+        wrapProgram $out/bin/${oa.pname} \
+          --set PATH ${
+          with pkgs;
+            lib.makeBinPath [
+              libnotify
+              slop
+              ffcast
+              ffmpeg
+              xclip
+              rofi
+              coreutils
+              gnused
+              procps
+              gawk
+            ]
+        }
+      '';
+    }))
+    (pkgs.rofi-rbw-x11.overrideAttrs (oa: {
+      patches =
+        (oa.patches or [])
+        ++ [
+          (pkgs.fetchpatch {
+            name = "fuzzel-support.patch";
+            url = "https://github.com/natsukium/rofi-rbw/commit/12d53a06c8963b01f7f2b8b7728f514525050bc9.patch";
+            includes = [
+              "src/rofi_rbw/selector/fuzzel.py"
+              "src/rofi_rbw/selector/selector.py"
+            ];
+            hash = "sha256-tb+lgsv5BRrh3tnHayKxzVASLcc4I+IaCaywMe9U5qk=";
+          })
+        ];
+    }))
+  ];
 }
