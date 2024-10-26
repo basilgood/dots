@@ -13,10 +13,48 @@
     ./zk.nix
   ];
 
+  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
+  stylix.enable = true;
+  stylix.image = pkgs.nixos-artwork.wallpapers.nineish-dark-gray.gnomeFilePath;
+  stylix.cursor = {
+    package = pkgs.bibata-cursors;
+    name = "Bibata-Modern-Ice";
+    size = 24;
+  };
+  stylix.fonts = {
+    sizes = {
+      applications = 10;
+      desktop = 10;
+      popups = 10;
+      terminal = 16;
+    };
+    monospace = {
+      name = "JetBrainsMono NF";
+      package = pkgs.nerdfonts.override {fonts = ["JetBrainsMono"];};
+    };
+
+    emoji = {
+      name = "Noto Color Emoji";
+      package = pkgs.noto-fonts-emoji;
+    };
+
+    sansSerif = {
+      name = "Noto Sans";
+      package = pkgs.noto-fonts;
+    };
+  };
+  stylix.targets = {
+    neovim.enable = false;
+    rofi.enable = false;
+  };
+
   home = {
     username = "vasy";
     homeDirectory = "/home/vasy";
     packages = with pkgs; [
+      vlc
+      vlc-bittorrent
+      qbittorrent
       shotcut
       vim-full
       anydesk
@@ -118,7 +156,6 @@
     feh.enable = true;
     btop = {
       enable = true;
-      catppuccin = {enable = true;};
     };
     mpv = {
       enable = true;
@@ -150,19 +187,18 @@
     direnv.enable = true;
     bat = {
       enable = true;
-      config.theme = "TwoDark";
+      # config.theme = "TwoDark";
     };
     home-manager.enable = true;
     alacritty = {
       enable = true;
-      catppuccin.enable = true;
       settings = {
-        font = {
-          normal = {
-            family = "JetBrainsMono NF";
-          };
-          size = 14;
-        };
+        # font = {
+        #   normal = {
+        #     family = "JetBrainsMono NF";
+        #   };
+        #   size = 16;
+        # };
         env = {
           TERM = "xterm-256color";
         };
@@ -170,13 +206,10 @@
     };
     kitty = {
       enable = true;
-      catppuccin = {enable = true;};
-      font = {
-        name = "JetBrainsMono Nerd Font";
-        # package = pkgs.hack-font;
-        # name = "Iosevka Term";
-        size = 16.0;
-      };
+      # font = {
+      #   name = "JetBrainsMono NF";
+      #   size = 16;
+      # };
       shellIntegration.mode = "no-cursor";
       settings = {
         term = "xterm-256color";
@@ -184,7 +217,7 @@
         cursor_shape = "block";
         cursor_blink_interval = 0;
         disable_ligatures = "never";
-        adjust_line_height = "110%";
+        # adjust_line_height = "110%";
       };
     };
     aria2 = {
@@ -256,6 +289,7 @@
         xorg.libxcb
         xorg.libxkbfile
         xorg.libxshmfence
+        xorg.libpciaccess
         zlib
       ];
   };
