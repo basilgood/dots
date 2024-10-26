@@ -10,7 +10,8 @@
   ];
 
   boot.initrd.availableKernelModules = ["nvme" "xhci_pci" "ahci" "usbhid" "sd_mod"];
-  boot.initrd.kernelModules = ["dm-snapshot"];
+  boot.initrd.kernelModules = ["amdgpu"];
+  boot.kernelParams = [ "amdgpu.freesync_video=1" ];
   boot.kernelModules = ["kvm-amd"];
   boot.extraModulePackages = [];
 
