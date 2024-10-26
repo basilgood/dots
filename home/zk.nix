@@ -2,6 +2,7 @@
   programs.zk = {
     enable = true;
     settings = {
+      notebook.dir = "~/Notes";
       note = {
         language = "en";
         default-title = "Untitled";
@@ -10,6 +11,7 @@
         id-charset = "alphanum";
         id-length = 5;
         id-case = "lower";
+        template = "default.md";
       };
 
       tool = {

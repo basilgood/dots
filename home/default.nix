@@ -17,7 +17,6 @@
     username = "vasy";
     homeDirectory = "/home/vasy";
     packages = with pkgs; [
-      obs-studio
       shotcut
       vim-full
       anydesk
@@ -46,13 +45,16 @@
       telegram-desktop
       newsraft
       amberol
+      tauon
       xfce.thunar
       broot
       zathura
       imv
       qimgv
       autorandr
-      timewarrior
+      bartib
+      obsidian
+      vesktop
     ];
 
     stateVersion = "23.11";
@@ -60,6 +62,41 @@
 
   fonts.fontconfig.enable = true;
   programs = {
+    vscode = {
+      enable = true;
+      package = pkgs.vscodium;
+      enableUpdateCheck = false;
+      extensions = with pkgs.vscode-extensions; [
+        mhutchie.git-graph
+        dbaeumer.vscode-eslint
+        editorconfig.editorconfig
+        jnoortheen.nix-ide
+        unifiedjs.vscode-mdx
+      ];
+      userSettings = {
+        "editor.fontSize" = 16;
+        "git-graph.repository.sign.commits" = true;
+        "git-graph.repository.sign.tags" = true;
+        "git.autofetch" = false;
+        "git.enableCommitSigning" = true;
+        "nix.enableLanguageServer" = true;
+        "nix.formatterPath" = "${pkgs.alejandra}/bin/alejandra";
+        "nix.serverPath" = "${pkgs.nil}/bin/nil";
+        "nix.serverSettings" = {
+          "nil" = {
+            "formatting" = {
+              "command" = ["${pkgs.alejandra}/bin/alejandra"];
+            };
+            "nix" = {
+              "maxMemoryMB" = 4096;
+              "flake" = {
+                "autoEvalInputs" = true;
+              };
+            };
+          };
+        };
+      };
+    };
     neovim = {
       enable = true;
       extraLuaPackages = ps: [ps.magick];
@@ -73,7 +110,10 @@
         imagemagick
       ];
     };
-    brave.enable = true;
+    brave = {
+      enable = true;
+      commandLineArgs = ["--password-store=basic"];
+    };
     chromium.enable = true;
     feh.enable = true;
     btop = {
@@ -132,10 +172,10 @@
       enable = true;
       catppuccin = {enable = true;};
       font = {
-        # name = "JetBrainsMono Nerd Font";
+        name = "JetBrainsMono Nerd Font";
         # package = pkgs.hack-font;
-        name = "Iosevka Term";
-        size = 14.0;
+        # name = "Iosevka Term";
+        size = 16.0;
       };
       shellIntegration.mode = "no-cursor";
       settings = {
@@ -198,7 +238,7 @@
         nss
         openssl
         pango
-        pipewire
+        # pipewire
         stdenv.cc.cc
         systemd
         vulkan-loader

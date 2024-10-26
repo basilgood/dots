@@ -6,6 +6,7 @@
   imports = [
     ../../modules/users.nix
     ../../modules/xorg.nix
+    # ../../modules/kde.nix
     ../../modules/fonts.nix
     ../../modules/nix.nix
     ../../modules/sound.nix
@@ -64,10 +65,6 @@
   '';
   programs.ssh = {
     askPassword = "${pkgs.lxqt.lxqt-openssh-askpass}/bin/lxqt-openssh-askpass";
-  };
-  programs.wireshark = {
-    enable = true;
-    package = pkgs.wireshark;
   };
   environment.localBinInPath = true;
   services.upower.enable = true;

@@ -11,6 +11,7 @@
       url = "github:nix-community/neovim-nightly-overlay";
     };
     catppuccin.url = "github:catppuccin/nix";
+    stylix.url = "github:danth/stylix";
     # nix-ld-rs = {
     #   url = "github:nix-community/nix-ld-rs";
     #   inputs.nixpkgs.follows = "nixpkgs";
@@ -21,6 +22,7 @@
     self,
     nixpkgs,
     catppuccin,
+    stylix,
     neovim-nightly,
     home-manager,
     ...
@@ -41,6 +43,7 @@
               users.vasy.imports = [
                 ./home
                 catppuccin.homeManagerModules.catppuccin
+                stylix.homeManagerModules.stylix
               ];
               users.vasy.home.packages = [
                 neovim-nightly.packages.${system}.neovim
