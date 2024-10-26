@@ -72,5 +72,8 @@
 
       PROMPT_COMMAND=_set_bash_prompt
     '';
+    sessionVariables = {
+      VLC_PLUGIN_PATH = "${pkgs.vlc-bittorrent}";
+    };
   };
 }
