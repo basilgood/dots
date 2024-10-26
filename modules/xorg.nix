@@ -6,6 +6,7 @@
       desktopManager = {
         xterm.enable = false;
       };
+      dpi = 125;
       displayManager = {
         lightdm = {
           enable = true;
