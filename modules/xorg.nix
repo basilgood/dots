@@ -6,22 +6,16 @@
       desktopManager = {
         xterm.enable = false;
       };
-      dpi = 125;
+      # dpi = 110;
+      # upscaleDefaultCursor = true;
       displayManager = {
         lightdm = {
           enable = true;
           background = pkgs.nixos-artwork.wallpapers.nineish-dark-gray.gnomeFilePath;
-          greeters = {
-            gtk = {
-              theme = {
-                name = "catppuccin-macchiato-pink-compact";
-                package = pkgs.catppuccin-gtk.override {
-                  accents = ["pink"];
-                  size = "compact";
-                  variant = "macchiato";
-                };
-              };
-            };
+          greeters.gtk = {
+            enable = true;
+            theme.name = "Adwaita-dark";
+            iconTheme.name = "Adwaita-dark";
           };
         };
         sessionCommands = ''
