@@ -12,6 +12,7 @@ in {
     terminal = "kitty";
     plugins = with pkgs; [rofi-top rofi-calc rofi-emoji];
     location = "center";
+    font = "Raleway Regular 14";
     extraConfig = {
       modi = "drun,run,window,calc,emoji";
       show-icons = true;
@@ -21,12 +22,13 @@ in {
       kb-primary-paste = "Control+V,Shift+Insert";
       kb-secondary-paste = "Control+v,Insert";
     };
-    theme = "${rofiThemes}/themes/squared-nord.rasi";
+    theme = "${rofiThemes}/themes/spotlight-dark.rasi";
   };
 
   programs.rbw = {
     enable = true;
     settings = {
+      email = "elsile691@gmail.com";
       pinentry = pkgs.pinentry-gtk2;
     };
   };
