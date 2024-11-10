@@ -1,79 +1,78 @@
 {pkgs, ...}: {
-  programs.bash = {
-    enable = true;
-    shellAliases = {
-      grep = "grep --color=auto";
-      lt = "${pkgs.tree}/bin/tree -L 1";
-      hm = "sed 's/[[:space:]]*$//' $HISTFILE | tac | awk '!x[$0]++' | tac | ${pkgs.moreutils}/bin/sponge $HISTFILE";
-      b = "${pkgs.bartib}/bin/bartib -f ~/.bartib";
+  programs = {
+    bash = {
+      enable = true;
+      shellAliases = {
+        grep = "grep --color=auto";
+        lt = "${pkgs.tree}/bin/tree -L 1";
+        hm = "sed 's/[[:space:]]*$//' $HISTFILE | tac | awk '!x[$0]++' | tac | ${pkgs.moreutils}/bin/sponge $HISTFILE";
+        b = "${pkgs.bartib}/bin/bartib -f ~/.bartib";
+        ns = "nh os switch -H liberty ~/Projects/dots/";
+        nc = "nh clean all";
+      };
+      historySize = -1;
+      historyFileSize = -1;
+      historyControl = ["ignoredups" "erasedups"];
+      historyIgnore = ["l" "ls" "ll" "lt" "cd" "rm" "rm rf" "hm" "yt" "exit" "history" "kill" "pkill" "fg" "bg" "mpv" "aria2c" "yazi"];
+      shellOptions = ["nocaseglob" "autocd" "dirspell" "cdspell" "cmdhist" "histappend"];
+      initExtra = ''
+        set -o notify
+        bind "set completion-ignore-case on"
+        bind "set completion-map-case on"
+        bind "set show-all-if-ambiguous on"
+        bind "set menu-complete-display-prefix on"
+        bind "set mark-symlinked-directories on"
+        bind "set colored-stats on"
+        bind "set visible-stats on"
+        bind "set page-completions off"
+        bind "set skip-completed-text on"
+        bind "set bell-style none"
+        bind 'TAB':menu-complete
+        bind '"\e[Z": menu-complete-backward'
+        bind '"\e[A": history-search-backward'
+        bind '"\e[B": history-search-forward'
+        bind '"\C-h": backward-kill-word'
+        stty -ixon
+      '';
+
+      sessionVariables = {
+        VLC_PLUGIN_PATH = "${pkgs.vlc-bittorrent}";
+      };
     };
-    historySize = -1;
-    historyFileSize = -1;
-    historyControl = ["ignoredups" "erasedups"];
-    historyIgnore = ["l" "ls" "ll" "lt" "cd" "rm" "rm rf" "hm" "yt" "exit" "history" "kill" "pkill" "fg" "bg" "mpv" "aria2c" "yazi"];
-    shellOptions = ["nocaseglob" "autocd" "dirspell" "cdspell" "cmdhist" "histappend"];
-    initExtra = ''
-      set -o notify
-      bind "set completion-ignore-case on"
-      bind "set completion-map-case on"
-      bind "set show-all-if-ambiguous on"
-      bind "set menu-complete-display-prefix on"
-      bind "set mark-symlinked-directories on"
-      bind "set colored-stats on"
-      bind "set visible-stats on"
-      bind "set page-completions off"
-      bind "set skip-completed-text on"
-      bind "set bell-style none"
-      bind 'TAB':menu-complete
-      bind '"\e[Z": menu-complete-backward'
-      bind '"\e[A": history-search-backward'
-      bind '"\e[B": history-search-forward'
-      bind '"\C-h": backward-kill-word'
-      stty -ixon
-    '';
 
-    bashrcExtra = ''
-      BD="\[\e[1m\]"
-      N="\[\e[0m\]"
-      R="\[\e[31m\]"
-      Y="\[\e[33m\]"
-      B="\[\e[34m\]"
-      P="\[\e[35m\]"
+    starship = {
+      enable = true;
+      settings = {
+        format = "$character$jobs$directory$git_branch$git_status$nix_shell \n› ";
+        character = {
+          format = "$symbol";
+          error_symbol = "[  ](bold fg:red bg:#19172C)";
+          success_symbol = "[  ](bold fg:green bg:#19172C)";
+        };
 
-      PROMPT_SYMBOL="› "
-      JBV_SYMBOL="•"
-      NIX_SYMBOL="❄-"
+        directory = {
+          format = "[   $path ](bg:#2D2B40 fg:bright-white)[](fg:#2D2B40)";
+        };
 
-      _set_bash_prompt() {
-        local EXIT=$?
-        local ERR=$([[ $EXIT -eq 0 ]] && echo "$B" || echo "$R")
-        local JBV=$([[ $(jobs -p | wc -l) -ne 0 ]] && echo " $Y$JBV_SYMBOL$N" || echo "")
-        local NIX=$([[ -n "$IN_NIX_SHELL" ]] && echo " $B$NIX_SYMBOL$IN_NIX_SHELL$N" || echo "")
+        git_branch = {
+          format = "[  $branch ](fg:bright-white)";
+        };
 
-        if [ ! -d "$PWD/.git" ]; then
-          PS1="$BD$P\W$N$NIX$JBV\n$ERR$PROMPT_SYMBOL$N"
-          PS2="↪︎$N"
-        else
-          local M=" "
-          local head=$(git rev-parse --abbrev-ref HEAD 2> /dev/null)
-          local status=$(git status --porcelain -b 2>/dev/null)
+        jobs = {
+          symbol = " 󰠜 ";
+          style = "bright-white";
+        };
 
-          M+=$( [[ $status =~ ([[:cntrl:]][A-Z][A-Z\ ]\ ) ]] && echo "+")
-          M+=$( [[ $status =~ ([[:cntrl:]][A-Z\ ][A-Z]\ ) ]] && echo "٭")
-          M+=$( [[ $status =~ ([[:cntrl:]]\?\?\ ) ]] && echo "?")
-          M+=$( [[ -e "$PWD/.git/refs/stash" ]] && echo "≡")
-          M+=$( [[ $status =~ ahead\ ([0-9]+) ]] && echo "''${BASH_REMATCH[1]}⇡")
-          M+=$( [[ $status =~ behind\ ([0-9]+) ]] && echo "''${BASH_REMATCH[1]}⇣")
+        hostname = {
+          ssh_only = true;
+          format = "[ $hostname ](italic fg:bright-white bg:#19172C)";
+        };
 
-          PS1="$BD$P\W$N $Y$N $BD$B$head$R$M$N$NIX$JBV\n$ERR$PROMPT_SYMBOL$N"
-          PS2="↪︎$N"
-        fi
-      }
+        nix_shell = {
+          format = " [❄ $state( \($name\))](bold blue)";
+        };
 
-      PROMPT_COMMAND=_set_bash_prompt
-    '';
-    sessionVariables = {
-      VLC_PLUGIN_PATH = "${pkgs.vlc-bittorrent}";
+      };
     };
   };
 }
