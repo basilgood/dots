@@ -42,7 +42,7 @@
               useUserPackages = true;
               users.vasy.imports = [
                 ./home
-                catppuccin.homeManagerModules.catppuccin
+                # catppuccin.homeManagerModules.catppuccin
                 stylix.homeManagerModules.stylix
               ];
               users.vasy.home.packages = [
