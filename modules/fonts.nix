@@ -12,6 +12,7 @@
       fira-code
       lexend
       borg-sans-mono
+      roboto
       (nerdfonts.override {
         fonts = [
           "JetBrainsMono"
