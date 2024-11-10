@@ -1,14 +1,14 @@
-_: {
+{pkgs, ...}: {
   programs.i3status-rust = {
     enable = true;
 
-    bars.bottom = {
+    bars.top = {
       settings = {
         theme = {
           theme = "native";
           overrides = {
-            idle_bg = "#1e1e2e";
-            idle_fg = "#cdd6f4";
+            idle_bg = "none";
+          #   idle_fg = "#cdd6f4";
           };
         };
       };
@@ -54,6 +54,12 @@ _: {
         }
         {
           block = "time";
+          click = [
+            {
+              button = "left";
+              cmd = "${pkgs.xfce.orage}/bin/orage";
+            }
+          ];
           format = {
             full = " $icon $timestamp.datetime(f:'%a %d-%m-%Y %R', l:ro_RO) ";
             short = " $icon $timestamp.datetime(f:%R) ";
