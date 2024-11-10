@@ -15,32 +15,33 @@
 
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
   stylix.enable = true;
+  stylix.opacity.terminal = 0.8;
   stylix.image = pkgs.nixos-artwork.wallpapers.nineish-dark-gray.gnomeFilePath;
+  stylix.polarity = "dark";
   stylix.cursor = {
-    package = pkgs.bibata-cursors;
-    name = "Bibata-Modern-Ice";
+    package = pkgs.oreo-cursors-plus;
+    name = "oreo_spark_orange_cursors";
     size = 24;
   };
   stylix.fonts = {
-    sizes = {
-      applications = 10;
-      desktop = 10;
-      popups = 10;
-      terminal = 16;
-    };
     monospace = {
-      name = "JetBrainsMono NF";
-      package = pkgs.nerdfonts.override {fonts = ["JetBrainsMono"];};
+      # package = pkgs.nerdfonts.override {fonts = ["JetBrainsMono"];};
+      package = pkgs.nerdfonts.override {fonts = ["Iosevka"];};
+      name = "Iosevka Nerd Font Mono";
     };
-
-    emoji = {
-      name = "Noto Color Emoji";
-      package = pkgs.noto-fonts-emoji;
-    };
-
     sansSerif = {
-      name = "Noto Sans";
-      package = pkgs.noto-fonts;
+      package = pkgs.inter;
+      name = "Inter";
+    };
+    serif = {
+      package = pkgs.merriweather;
+      name = "Merriweather";
+    };
+    sizes = {
+      applications = 12;
+      terminal = 16;
+      desktop = 12;
+      popups = 12;
     };
   };
   stylix.targets = {
@@ -79,7 +80,10 @@
       ytfzf
       nb
       simplescreenrecorder
-      vokoscreen-ng
+      (vokoscreen-ng.overrideAttrs (oa: {
+        version = "4.3.0";
+        hash = "sha256-Y6+R18Gf3ShqhsmZ5Okx02fSOOyilS7iKU5FW9wpxvY=";
+      }))
       telegram-desktop
       newsraft
       amberol
@@ -93,6 +97,11 @@
       bartib
       obsidian
       vesktop
+      nh
+      remind
+      calcurse
+      rawtherapee
+      darktable
     ];
 
     stateVersion = "23.11";
@@ -100,41 +109,6 @@
 
   fonts.fontconfig.enable = true;
   programs = {
-    vscode = {
-      enable = true;
-      package = pkgs.vscodium;
-      enableUpdateCheck = false;
-      extensions = with pkgs.vscode-extensions; [
-        mhutchie.git-graph
-        dbaeumer.vscode-eslint
-        editorconfig.editorconfig
-        jnoortheen.nix-ide
-        unifiedjs.vscode-mdx
-      ];
-      userSettings = {
-        "editor.fontSize" = 16;
-        "git-graph.repository.sign.commits" = true;
-        "git-graph.repository.sign.tags" = true;
-        "git.autofetch" = false;
-        "git.enableCommitSigning" = true;
-        "nix.enableLanguageServer" = true;
-        "nix.formatterPath" = "${pkgs.alejandra}/bin/alejandra";
-        "nix.serverPath" = "${pkgs.nil}/bin/nil";
-        "nix.serverSettings" = {
-          "nil" = {
-            "formatting" = {
-              "command" = ["${pkgs.alejandra}/bin/alejandra"];
-            };
-            "nix" = {
-              "maxMemoryMB" = 4096;
-              "flake" = {
-                "autoEvalInputs" = true;
-              };
-            };
-          };
-        };
-      };
-    };
     neovim = {
       enable = true;
       extraLuaPackages = ps: [ps.magick];
