@@ -1,27 +1,27 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   services.dunst = {
     enable = true;
-    iconTheme = {
-      name = "Papirus-Dark";
-      package = pkgs.papirus-icon-theme;
-      size = "32x32";
-    };
-
     settings = {
       global = {
+        geometry = "300x30-5+60";
         origin = "bottom-right";
+        format = "%a\n<b>%s</b>\n%b";
         word_wrap = true;
-        show_age_threshold = 60;
-        idle_threshold = 120;
-        padding = 20;
-        horizontal_padding = 20;
-        separator_height = 1;
+        icon_position = "left";
+        max_icon_size = 80;
+        padding = 8;
+        horizontal_padding = 8;
+        line_height = 0;
+        notification_height = "0";
+        separator_height = 2;
         frame_width = 1;
-        line_height = 4;
-        max_icon_size = 32;
+        markup = "full";
+        plain_text = "no";
+        alignment = "center";
+        vertical_alignment = "center";
       };
     };
   };
-
-  home.packages = [pkgs.libnotify];
+  home.packages = [ pkgs.libnotify ];
 }

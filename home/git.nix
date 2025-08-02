@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   programs.git = {
     enable = true;
     lfs.enable = true;
@@ -7,7 +8,17 @@
     extraConfig = {
       core.editor = "nvim";
       init.defaultBranch = "master";
-      merge.conflictstyle = "diff3";
+      merge = {
+        tool = "nvimdiff";
+        conflictstyle = "zdiff3";
+      };
+      mergetool = {
+        nvimdiff = {
+          # layout = "LOCAL,MERGED,REMOTE";
+          trustExitCode = true;
+          keepBackup = false;
+        };
+      };
       diff.colorMoved = "default";
     };
     delta = {
@@ -32,12 +43,15 @@
           command = "git fetch --all --tags --prune --prune-tags";
           context = "global";
           key = "F";
-          showOutput = true;
+          output = "popup";
         }
       ];
-      git.paging = {
-        colorArg = "always";
-        pager = "delta --dark --paging=never";
+      git = {
+        paging = {
+          colorArg = "always";
+          pager = "delta --dark --paging=never";
+        };
+        autoForwardBranches = "none";
       };
       keybinding = {
         universal = {
@@ -46,4 +60,9 @@
       };
     };
   };
+  home.packages = with pkgs; [
+    git-filter-repo
+    difftastic
+    diffnav
+  ];
 }

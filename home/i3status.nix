@@ -1,22 +1,25 @@
-{pkgs, ...}: {
+_: {
   programs.i3status-rust = {
     enable = true;
-
     bars.top = {
       settings = {
         theme = {
-          theme = "native";
+          theme = "ctp-mocha";
           overrides = {
-            idle_bg = "none";
-          #   idle_fg = "#cdd6f4";
+            separator = "";
           };
         };
       };
       icons = "material-nf";
       blocks = [
         {
-          block = "battery";
-          if_command = "ls /sys/class/power_supply/BAT*";
+          block = "toggle";
+          format = "$icon 󰅶 ";
+          command_state = "xset q | grep 'DPMS is Disabled'";
+          command_on = "xset q -dpms s off";
+          command_off = "xset q +dpms s on";
+          state_on = "idle";
+          state_off = "idle";
         }
         {
           block = "notify";
@@ -24,24 +27,29 @@
         }
         {
           block = "cpu";
-          interval = 1;
+          format = " $icon $utilization $frequency ";
         }
         {
           block = "load";
           format = " $icon $1m ";
-          interval = 1;
         }
         {
           block = "memory";
           format = " $icon $mem_used.eng(w:2) ";
           format_alt = " $icon_swap $swap_used.eng(w:3,u:B,p:M) ";
-          interval = 1;
         }
         {
           block = "temperature";
           format = " $icon $max ";
           interval = 10;
           chip = "k10temp-*";
+        }
+        {
+          block = "custom";
+          interval = 5;
+          command = ''
+            echo 󰈐 $(sensors | grep fan1 | awk '{print $2; exit}')
+          '';
         }
         {
           block = "sound";
@@ -54,15 +62,8 @@
         }
         {
           block = "time";
-          click = [
-            {
-              button = "left";
-              cmd = "${pkgs.xfce.orage}/bin/orage";
-            }
-          ];
           format = {
-            full = " $icon $timestamp.datetime(f:'%a %d-%m-%Y %R', l:ro_RO) ";
-            short = " $icon $timestamp.datetime(f:%R) ";
+            full = " $icon  $timestamp.datetime(f:'%a %d-%m-%Y %R', l:ro_RO) ";
           };
           interval = 60;
         }

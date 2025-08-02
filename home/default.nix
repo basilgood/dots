@@ -1,67 +1,20 @@
-{pkgs, ...}: {
-  imports = [
-    ./i3.nix
-    ./i3status.nix
-    ./rofi.nix
-    ./services
-    ./gtk.nix
-    ./xdg.nix
-    ./bash.nix
-    ./tmux.nix
-    ./git.nix
-    ./yazi.nix
-    ./zk.nix
-  ];
-
-  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
-  stylix.enable = true;
-  stylix.opacity.terminal = 0.8;
-  stylix.image = pkgs.nixos-artwork.wallpapers.nineish-dark-gray.gnomeFilePath;
-  stylix.polarity = "dark";
-  stylix.cursor = {
-    package = pkgs.oreo-cursors-plus;
-    name = "oreo_spark_orange_cursors";
-    size = 24;
-  };
-  stylix.fonts = {
-    monospace = {
-      # package = pkgs.nerdfonts.override {fonts = ["JetBrainsMono"];};
-      package = pkgs.nerdfonts.override {fonts = ["Iosevka"];};
-      name = "Iosevka Nerd Font Mono";
-    };
-    sansSerif = {
-      package = pkgs.inter;
-      name = "Inter";
-    };
-    serif = {
-      package = pkgs.merriweather;
-      name = "Merriweather";
-    };
-    sizes = {
-      applications = 12;
-      terminal = 16;
-      desktop = 12;
-      popups = 12;
-    };
-  };
-  stylix.targets = {
-    neovim.enable = false;
-    rofi.enable = false;
-  };
-
+{ pkgs, ... }:
+{
+  nixpkgs.config.allowUnfree = true;
   home = {
     username = "vasy";
     homeDirectory = "/home/vasy";
     packages = with pkgs; [
+      insomnia
+      bartib
       vlc
       vlc-bittorrent
       qbittorrent
-      shotcut
-      vim-full
+      # shotcut
       anydesk
       element-desktop
       docker-compose
-      arion
+      # arion
       inkscape
       keepassxc
       thunderbird
@@ -80,28 +33,24 @@
       ytfzf
       nb
       simplescreenrecorder
-      (vokoscreen-ng.overrideAttrs (oa: {
-        version = "4.3.0";
-        hash = "sha256-Y6+R18Gf3ShqhsmZ5Okx02fSOOyilS7iKU5FW9wpxvY=";
-      }))
+      vokoscreen-ng
       telegram-desktop
-      newsraft
       amberol
       tauon
-      xfce.thunar
       broot
       zathura
       imv
       qimgv
       autorandr
-      bartib
-      obsidian
-      vesktop
       nh
       remind
       calcurse
-      rawtherapee
-      darktable
+      libnotify
+      blanket
+      bitwarden-desktop
+      goldwarden
+      lazydocker
+      flameshot
     ];
 
     stateVersion = "23.11";
@@ -109,28 +58,12 @@
 
   fonts.fontconfig.enable = true;
   programs = {
-    neovim = {
-      enable = true;
-      extraLuaPackages = ps: [ps.magick];
-      extraPackages = with pkgs; [
-        vscode-langservers-extracted
-        shfmt
-        yamllint
-        jq
-        fixjson
-        gcc
-        imagemagick
-      ];
-    };
     brave = {
       enable = true;
-      commandLineArgs = ["--password-store=basic"];
+      commandLineArgs = [ "--password-store=basic" ];
     };
-    chromium.enable = true;
     feh.enable = true;
-    btop = {
-      enable = true;
-    };
+    btop.enable = true;
     mpv = {
       enable = true;
       config = {
@@ -153,46 +86,19 @@
       ];
     };
     ripgrep.enable = true;
-    ripgrep.arguments = ["--pretty"];
+    ripgrep.arguments = [ "--pretty" ];
     fzf.enable = true;
-    fzf.defaultOptions = ["--height 40%" "--layout=reverse" "--ansi"];
+    fzf.defaultOptions = [
+      "--height 40%"
+      "--layout=reverse"
+      "--ansi"
+    ];
     fzf.defaultCommand = "fd -tf -L -H -E=.git -E=node_modules --strip-cwd-prefix";
     fzf.tmux.enableShellIntegration = true;
     direnv.enable = true;
     bat = {
       enable = true;
       # config.theme = "TwoDark";
-    };
-    home-manager.enable = true;
-    alacritty = {
-      enable = true;
-      settings = {
-        # font = {
-        #   normal = {
-        #     family = "JetBrainsMono NF";
-        #   };
-        #   size = 16;
-        # };
-        env = {
-          TERM = "xterm-256color";
-        };
-      };
-    };
-    kitty = {
-      enable = true;
-      # font = {
-      #   name = "JetBrainsMono NF";
-      #   size = 16;
-      # };
-      shellIntegration.mode = "no-cursor";
-      settings = {
-        term = "xterm-256color";
-        scrollback_lines = 10000;
-        cursor_shape = "block";
-        cursor_blink_interval = 0;
-        disable_ligatures = "never";
-        # adjust_line_height = "110%";
-      };
     };
     aria2 = {
       enable = true;
@@ -204,12 +110,14 @@
         summary-interval = "0";
       };
     };
+    home-manager.enable = true;
   };
 
   home.sessionVariables = rec {
     VISUAL = "nvim";
     EDITOR = VISUAL;
-    NIX_LD_LIBRARY_PATH = with pkgs;
+    NIX_LD_LIBRARY_PATH =
+      with pkgs;
       lib.makeLibraryPath [
         alsa-lib
         at-spi2-atk
@@ -233,6 +141,7 @@
         libappindicator-gtk3
         libdrm
         libglvnd
+        libgbm
         libnotify
         libpulseaudio
         libunwind
@@ -267,4 +176,19 @@
         zlib
       ];
   };
+
+  imports = [
+    ./stylix.nix
+    ./i3.nix
+    ./i3status.nix
+    ./rofi.nix
+    ./services
+    ./gtk.nix
+    ./xdg.nix
+    ./bash.nix
+    ./kitty.nix
+    ./tmux.nix
+    ./git.nix
+    ./yazi.nix
+  ];
 }

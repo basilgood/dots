@@ -7,51 +7,54 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    neovim-nightly = {
-      url = "github:nix-community/neovim-nightly-overlay";
-    };
-    catppuccin.url = "github:catppuccin/nix";
+    utils.url = "github:numtide/flake-utils";
+    neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
+    # catppuccin.url = "github:catppuccin/nix";
     stylix.url = "github:danth/stylix";
-    # nix-ld-rs = {
-    #   url = "github:nix-community/nix-ld-rs";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
   };
 
-  outputs = inputs @ {
-    self,
-    nixpkgs,
-    catppuccin,
-    stylix,
-    neovim-nightly,
-    home-manager,
-    ...
-  }: let
-    system = "x86_64-linux";
-  in {
-    nixosConfigurations = {
-      liberty = nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = {inherit inputs self;};
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      utils,
+      stylix,
+      # catppuccin,
+      neovim-nightly,
+      ...
+    }@inputs:
+    utils.lib.eachDefaultSystemPassThrough (
+      system:
+      let
         modules = [
           ./hosts/liberty
+          # catppuccin.nixosModules.catppuccin
+          stylix.nixosModules.stylix
           home-manager.nixosModules.home-manager
           {
             home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
+              extraSpecialArgs = { inherit inputs; };
+              # useGlobalPkgs = true;
+              # useUserPackages = true;
               users.vasy.imports = [
                 ./home
-                # catppuccin.homeManagerModules.catppuccin
-                stylix.homeManagerModules.stylix
+                # catppuccin.homeModules.catppuccin
+                stylix.homeModules.stylix
               ];
-              users.vasy.home.packages = [
-                neovim-nightly.packages.${system}.neovim
-              ];
+              users.vasy.home.packages = [ neovim-nightly.packages.${system}.neovim ];
             };
           }
         ];
-      };
-    };
-  };
+      in
+      {
+        nixosConfigurations = {
+          liberty = nixpkgs.lib.nixosSystem {
+            inherit system;
+            specialArgs = { inherit inputs; };
+            modules = modules;
+          };
+        };
+      }
+    );
 }

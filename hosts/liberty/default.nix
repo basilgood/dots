@@ -2,11 +2,13 @@
   pkgs,
   lib,
   ...
-}: {
+}:
+{
   imports = [
     ../../modules/users.nix
-    ../../modules/xorg.nix
+    ../../modules/i3.nix
     # ../../modules/kde.nix
+    # ../../modules/xfce-i3.nix
     ../../modules/fonts.nix
     ../../modules/nix.nix
     ../../modules/sound.nix
@@ -30,6 +32,11 @@
       efi.canTouchEfiVariables = true;
     };
   };
+  # catppuccin = {
+  #   enable = true;
+  #   grub.enable = true;
+  #   tty.enable = true;
+  # };
 
   networking = {
     hostName = "liberty";
@@ -55,7 +62,6 @@
     keyMap = "us";
   };
 
-  programs.dconf.enable = true;
   programs.ssh.startAgent = true;
   programs.ssh.extraConfig = ''
     Host *
@@ -67,8 +73,7 @@
     askPassword = "${pkgs.lxqt.lxqt-openssh-askpass}/bin/lxqt-openssh-askpass";
   };
   environment.localBinInPath = true;
-  services.upower.enable = true;
-  services.gvfs.enable = true;
+  environment.systemPackages = with pkgs; [ vim_configurable ];
   services.xserver.config = ''
     Section "Monitor"
       Identifier "HDMI-A-0"
