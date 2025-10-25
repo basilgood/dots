@@ -32,65 +32,57 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    flake-parts.url = "github:hercules-ci/flake-parts";
+
+    import-tree.url = "github:vic/import-tree";
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      home-manager,
-      ...
-    }@inputs:
-    let
-      inherit (self) outputs;
+    { self, ... }@inputs:
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [ "x86_64-linux" ];
 
-      systems = [
-        "x86_64-linux"
-      ];
-
-      pkgsFor = nixpkgs.legacyPackages;
-      forAllSystems = nixpkgs.lib.genAttrs systems;
-    in
-    {
-      packages = forAllSystems (
-        system:
+      perSystem =
+        { system, ... }:
         let
-          pkgs = pkgsFor.${system};
+          pkgs = inputs.nixpkgs.legacyPackages.${system};
         in
         {
-          hello = pkgs.hello;
-        }
-      );
+          packages.hello = pkgs.hello;
 
-      devShells = forAllSystems (
-        system:
-        let
-          pkgs = pkgsFor.${system};
-        in
-        {
-          default = pkgs.mkShell {
-            packages = with pkgs; [
-              nixfmt-rfc-style
-            ];
+          devShells.default = pkgs.mkShell {
+            packages = [ pkgs.nixfmt-rfc-style ];
           };
-        }
-      );
+        };
 
-      nixosConfigurations = {
-        liberty = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs outputs; };
+      flake = {
+        nixosConfigurations.liberty = inputs.nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit inputs;
+            outputs = self.outputs;
+          };
           modules = [
-            ./nixos/core
-            ./nixos/liberty
+            (inputs.import-tree.filter (
+              path:
+              !(inputs.nixpkgs.lib.hasSuffix "home.nix" path || inputs.nixpkgs.lib.hasSuffix "hypr.nix" path)
+            ) ./nixos)
           ];
         };
-      };
 
-      homeConfigurations = {
-        vasy = home-manager.lib.homeManagerConfiguration {
-          extraSpecialArgs = { inherit inputs outputs; };
-          modules = [ ./home-manager/vasy ];
-          pkgs = pkgsFor.x86_64-linux;
+        homeConfigurations.vasy = inputs.home-manager.lib.homeManagerConfiguration {
+          extraSpecialArgs = {
+            inherit inputs;
+            outputs = self.outputs;
+          };
+          modules = [
+            (inputs.import-tree [
+              ./home-manager/vasy
+              ./nixos/core/home.nix
+              ./nixos/core/hypr.nix
+            ])
+          ];
+          pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
         };
       };
     };
